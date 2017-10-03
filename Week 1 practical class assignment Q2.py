@@ -12,12 +12,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import log
 
-def gaud(f,a,b,N):
-    I=a
-    dx=( b - a ) / N
+def gaud(f,c,d,N):
+    if (d-c) <=0:
+        raise ValueError('Argument d must be greater than c')
+    if N<=0:
+        raise ValueError('Argument N must be greater than 0')
+    if not(callable(f)):
+        raise Exception('A callable function must be sent to gaud')
+    
+    I=c
+    dx=( float(d) - float(c) ) / int(N)
     n=int(N)
     for i in xrange(0,n):
-        I+= f(a + (i+0.5)*dx )
+        I+= f(float(c) + (i+0.5)*dx )
     
     I *= dx
     
@@ -34,7 +41,14 @@ for i in xrange(1,5):
 def error(c,d,N1,m):
     "function that calculates the error between true integration \
     and gaussian  quadrature for sin(mx)"
-    e=gaud(lambda x: np.sin(m * x),c,d,N1)
+    if (d - c) <=0:
+        raise ValueError('Argument d must be greater than c')
+    if N1<=0:
+        raise ValueError('Argument N1 must be greater than 0')
+    if not(isinstance(m,int)):
+        raise TypeError('Argument m to error must be an integer')
+    
+    e=gaud(lambda x: np.sin(m * x),c,d,int(N1))
     ex=- (1 / m) * np.cos(d) + (1 / m) * np.cos(c)
     error=e - ex
     return error
@@ -45,6 +59,8 @@ print error(0,np.pi,20,1)
 print error(0,np.pi,20,3)
 
 #there is almost 3 times the error for sin3x. This is because it is varying 
+
+
 #Exercise 3
 
 n=np.zeros(4)
@@ -80,16 +96,56 @@ def ooc(c,d,N1,m,N2):
     the change in error relative to the change in resolution between two resolutions \
     dx1 and dx2"
     
-    e1=error(c,d,N1,m)
-    e2=error(c,d,N2,m)
-    dx1=(d - c) / N1
-    dx2=(d - c) / N2
+    e1=abs(error(c,d,N1,m))
+    e2=abs(error(c,d,N2,m))
+    dx1=(d - c) / int(N1)
+    dx2=(d - c) / int(N2)
     n=( np.log(e1) - log(e2) ) / ( log(dx1) - log(dx2) )
     return n
     
 
-print ooc(0,np.pi,4000,1,40000)
-print ooc(0,np.pi,int(4e4),1,int(4e5))
-print ooc(0,np.pi,int(4e5),1,int(4e6))
+print ooc(0,np.pi,4e3,1,4e4)
+print ooc(0,np.pi,4e4,1,4e5)
+print ooc(0,np.pi,4e5,1,4e6)
 #these should all be second order, but there is errors as you increase N1 and N2 because there is not enough space in the mantissa
 
+#Test script
+def test(f,c,d,N,N1,m,N2):
+    try: 
+        gaud(f,c,d,N)
+    except ValueError as inst:
+        #this means it will print the error instruction given in the first function
+        print('gaud' + inst)
+        pass
+    except not(callable(f)) as inst:
+        print('guad' + inst)
+        pass
+        
+    else:
+        #this gives an error if something has gone horribly wrong
+        print("Error in gaud function")
+    
+    try:
+        error(c,d,N1,m)
+    except ValueError as inst:
+        print('error' + inst)
+        pass
+    except not(isinstance(m,int)) as inst:
+        print('error' + inst)
+    else:
+        print("Error in error function")
+    
+    try:
+        ooc(c,d,N1,m,N2)
+    except ValueError as inst:
+        print('ooc' + inst)
+        pass
+    except TypeError as inst:
+        print('ooc' + inst)
+        pass
+    else:
+        print("Error in ooc function")
+        
+test(np.sin,5,3,-1,4.5,4,3)
+
+        
