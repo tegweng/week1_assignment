@@ -60,7 +60,7 @@ for i in xrange(4):
     errorarray[i] = error(0,np.pi,n[i],1)
     
 print errorarray
-#error array is an array that contains 
+#error array is an array that contains all the errors for N=4000,40000,400000,4000000
 
 deltax=np.zeros(4)
 
@@ -69,11 +69,11 @@ for i in xrange(4):
     
 print deltax
 
-newarray=[errorarray,deltax]
+plt.figure(0)
+#a graph that shows the errors as a function of dx on a log-log scale
+plt.plot(deltax,errorarray)
+plt.xscale('log')
+plt.yscale('log')
+plt.show()
 
-newnew=np.vstack(newarray)
-errorvsdx=np.std(newnew,axis=0)
-
-plt.figure(1)
-plt.plot(errorvsdx)
 
