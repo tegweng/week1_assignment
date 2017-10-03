@@ -115,10 +115,10 @@ def test(f,c,d,N,N1,m,N2):
         gaud(f,c,d,N)
     except ValueError as inst:
         #this means it will print the error instruction given in the first function
-        print('gaud' + inst)
+        print('gaud ' + str(inst))
         pass
     except not(callable(f)) as inst:
-        print('guad' + inst)
+        print('guad ' + str(inst))
         pass
         
     else:
@@ -128,20 +128,20 @@ def test(f,c,d,N,N1,m,N2):
     try:
         error(c,d,N1,m)
     except ValueError as inst:
-        print('error' + inst)
+        print('error ' + str(inst))
         pass
     except not(isinstance(m,int)) as inst:
-        print('error' + inst)
+        print('error ' + str(inst))
     else:
         print("Error in error function")
     
     try:
         ooc(c,d,N1,m,N2)
     except ValueError as inst:
-        print('ooc' + inst)
+        print('ooc ' + str(inst))
         pass
     except TypeError as inst:
-        print('ooc' + inst)
+        print('ooc ' + str(inst))
         pass
     else:
         print("Error in ooc function")
